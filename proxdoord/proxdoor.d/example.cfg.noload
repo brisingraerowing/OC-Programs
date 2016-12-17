@@ -1,0 +1,15 @@
+[general]
+name = Proxdoor 1
+range = 3
+side = top
+open_time = 3
+inverted = false
+
+[addresses]
+motion_sensor =
+redstone = 
+
+[users]
+user_list = 
+is_blacklist = false
+allow_all = false
