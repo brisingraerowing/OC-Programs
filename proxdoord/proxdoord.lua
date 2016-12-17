@@ -162,7 +162,21 @@ function start()
 	
 	log_general("Initializing Proximity Door Daemon")
 	
+	log_general("Initializing doors")
+	
+	for _, v in pairs(config.doors) do
+		if v.general.inverted then
+			v.addresses.redstone.setOutput(v.general.side, 15)
+		end
+	end
+	
+	log_general("Doors initialized")
+	
+	log_general("Initializing event listeners")
+	
 	event.listen("motion", motion_event)
+	
+	log_general("Event listeners initialized")
 	
 	log_general("Proximity Door Daemon started")
 
@@ -172,7 +186,19 @@ function stop()
 
 	log_general("Terminating Proximity Door Daemon")
 
+	log_general("Terminating event listeners")
+	
 	event.ignore("motion", motion_event)
+	
+	log_access("Event listeners terminated")
+	
+	log_access("Closing all doors")
+	
+	for _, v in pairs(config.doors) do
+		v.addresses.redstone.setOutput(v.general.side, 0)
+	end
+	
+	log_access("All doors closed")
 	
 	log_general("Proximity Door Daemon stopped")
 	
