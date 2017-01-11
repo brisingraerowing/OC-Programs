@@ -24,6 +24,10 @@ local function is_config_file(path)
 	return path:match("^.+(%..+)$") == ".cfg" and fs.exists(path) and not fs.isDirectory(path) and not fs.isLink(path) -- We don't allow links for security reasons.
 end
 
+local function is_plugin_file(path)
+	return path:match("^.+(%..+)$") == ".lua" and fs.exists(path) and not fs.isDirectory(path) and not fs.isLink(path) -- We don't allow links for security reasons.
+end
+
 local function load_proxdoor_d_config(tbl, path)
 	
 	local tmp = ini.parse(path)
@@ -48,6 +52,29 @@ local function load_proxdoor_d_config(tbl, path)
 	
 end
 
+local function load_plugin(tbl, path)
+	local m = dofile(path)
+	if type(m) ~= "table" then
+		error("Plugin is not a table, it is a " .. type(m) .. " : File: '" .. path .. "'.")
+	end
+	if type(m._NAME) ~= "string" then
+		error("Required variable _NAME not defined in plugin file '" .. path .. "'.")
+	end
+	if type(m._AUTHOR) ~= "string" then
+		error("Required variable _AUTHOR not defined in plugin file '" .. path .. "'.")
+	end
+	if type(m.entityAccess) ~= "function" then
+		error("Function entityAccess not defined in plugin file '" .. path .. "'.")
+	end
+	if type(m.init) ~= "function" then
+		error("Function init not defined in plugin file '" .. path .. "'.")
+	end
+	if type(m.shutdown) ~= "function" then
+		error("Function shutdown not defined in plugin file '" .. path "'.")
+	end
+	table.insert(tbl, m)
+end
+
 local function load_config()
 
 	local tmp = ini.parse("/etc/proxdoor.cfg")
@@ -64,15 +91,36 @@ local function load_config()
 			general_log_enabled = gryphonlib.toboolean(tmp.logging.general_log_enabled),
 			access_log_enabled = gryphonlib.toboolean(tmp.logging.access_log_enabled)
 		},
+		plugins = {},
 		doors = {}
 	}
 	
-	for path in fs.list(tmp.general.config_dir) don
+	for path in fs.list(tmp.general.config_dir) do
 		if is_config_file(path) then
 			load_proxdoor_d_config(config.doors, path)
 		end
 	end
 
+	for path in fs.list(tmp.general.plugin_dir) do
+		if is_plugin_file(path) then
+			load_plugin(config.plugins, path)
+		end
+	end
+	
+end
+
+local function initialize_plugins()
+	for _, plugin in ipairs(config.plugins) do
+		log_general("Initializing plugin " .. plugin._NAME)
+		plugin.init()
+	end
+end
+
+local function shutdown_plugins()
+	for _, plugin in ipairs(config.plugins) do
+		log_general("Stopping plugin " .. plugin._NAME)
+		plugin.shutdown()
+	end
 end
 
 local function ensure_log_dir_exists()
@@ -138,7 +186,18 @@ local function motion_event(address, x, y, z, entity)
 		
 		if is_in_range(tmp.general.range, x, y, z) then
 		
-			if is_allowed(tmp.users, entity) then
+			local allow = is_allowed(tmp.users, entity)
+			
+			for _, plugin in ipairs(config.plugins) do
+				local tmp = plugin.entityAccess(tmp.general.name, entity, allow)
+				
+				if type(tmp) == "boolean" then
+					allow = tmp
+				end
+				
+			end
+		
+			if allow then
 				log_access(tmp.general.name, entity, "Allowed")
 				on_entity_allowed(tmp.general.name, entity)
 				toggle_redstone(tmp.addresses.redstone, tmp.general.side)
@@ -161,6 +220,11 @@ function start()
 	ensure_log_dir_exists()
 	
 	log_general("Initializing Proximity Door Daemon")
+	log_general("Initializing plugins")
+	
+	initialize_plugins()
+	
+	log_general("Plugins initialized")
 	
 	log_general("Initializing doors")
 	
@@ -184,21 +248,27 @@ end
 
 function stop()
 
-	log_general("Terminating Proximity Door Daemon")
+	log_general("Stopping Proximity Door Daemon")
 
-	log_general("Terminating event listeners")
+	log_general("Stopping event listeners")
 	
 	event.ignore("motion", motion_event)
 	
-	log_access("Event listeners terminated")
+	log_general("Event listeners stopped")
 	
-	log_access("Closing all doors")
+	log_general("Closing all doors")
 	
 	for _, v in pairs(config.doors) do
 		v.addresses.redstone.setOutput(v.general.side, 0)
 	end
 	
-	log_access("All doors closed")
+	log_general("All doors closed")
+	
+	log_general("Stopping plugins")
+	
+	shutdown_plugins()
+	
+	log_general("Plugins stopped")
 	
 	log_general("Proximity Door Daemon stopped")
 	
