@@ -1,0 +1,25 @@
+local tankutils = {}
+
+local component = require("component")
+
+local function iif(condition, true_value, false_value)
+	if condition then return true_value else return false_value end
+end
+
+--[[
+	Gets the readable name of the fluid in the tank specified by address
+	
+	Parameters:
+	
+	* address - Either the UUID address of a tank controller or an instance of the tank_controller component
+	* side - The side the tank is on.
+	
+	Returns: The readable name of the fluid, e.g. 'Water' or 'Lava'.
+]]
+function tankutils.getFluidReadableName(address, side)
+	local controller = iif(type(address) == "string", component.proxy(address), address)
+	local fluid = controller.getFluidInTank(side)
+	return fluid.label
+end
+
+return tankutils

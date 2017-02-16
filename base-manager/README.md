@@ -1,1 +1,0 @@
-# Brisingr Aerowing's Base Manager program for OpenComputers
