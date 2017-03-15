@@ -186,6 +186,10 @@ function gryphonlib.toboolean(obj)
 	end
 end
 
+function gryphonlib.iif(condition, true_value, false_value)
+	if condition then return true_value else return false_value end
+end
+
 function gryphonlib.split_string(sep, str, maxSplit, isregex)
 	assert(sep ~= '')
 	assert(maxSplit == nil or maxSplit >= 1)

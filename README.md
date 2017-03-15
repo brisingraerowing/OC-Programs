@@ -19,4 +19,4 @@
 	* Tamale - TAble MAtching Lua Extension: Erlang-style pattern matching library for Lua (3rd Party, Slightly modified to use Lua 5.2+ module semantics, from https://github.com/silentbicycle/tamale)
 	* Tankutils - Utilities for working with tanks.
 	* Bdd - Binary Descision Diagram library (3rd Party, slightly modified to use Lua 5.2+ module semantics, from https://github.com/silentbicycle/lua-bdd)
-	
+	* Vararg - Library for manipulation of variable arguements of functions (3rd Party, from https://github.com/moteus/lua-vararg)
