@@ -5,7 +5,10 @@ local port = 14948
 local label = "netfs"
 local change = false
 local debug = true
-local mount_path = "C:/TestDir"
+local mount_paths = {
+    "C:\TestDir",
+    "E:\AnotherDir"
+}
 -- Configuration - End
 
 local physfs = require("physfs")
@@ -366,13 +369,12 @@ local function update()
 				sendData("{" .. tostring(success) .. "}")
 			end
 		elseif ctrl == "remove" then
-			-- TODO: Recursive remove
 			if not checkArg(1,ret[1],"string") then return end
 			if change then
 				if physfs.stat(ret[1]).type == "dir" then
 					sendData("{" .. tostring(recursive_delete(ret[1])) .. "}")
 				else
-					physfs.delete(ret[1])
+					sendData("{" .. tostring(physfs.delete(ret[1])) .. "}")
 				end
 			else
 				sendData("{false}")
@@ -383,12 +385,14 @@ local function update()
 	end
 end
 
-local tmp, msg = physfs.mount(mount_path, "")
-
-if not tmp then
-print(msg)
-os.exit()
+for _, path in pairs(mount_paths) do
+    local res, msg = physfs.mount(path)
+    
+    if not res then
+        print("WARN: Mount of path '" .. path .. " failed. Error Message: " .. msg)
+    end
 end
+
 
 print("Calculating current space usage ...")
 curspace = recurseCount("/")
