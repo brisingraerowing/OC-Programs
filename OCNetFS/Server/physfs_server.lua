@@ -6,8 +6,8 @@ local label = "netfs"
 local change = false
 local debug = true
 local mount_paths = {
-    "C:\TestDir",
-    "E:\AnotherDir"
+    "C:\\TestDir",
+    "E:\\AnotherDir"
 }
 -- Configuration - End
 
@@ -17,7 +17,7 @@ local socket = require("socket")
 local function recurseCount(path)
     local count = 0
     local list = physfs.files(path)
-    
+
     for i = 1, #list do
         local stat = physfs.stat(list[i])
         if stat.type == "dir" then
@@ -26,7 +26,7 @@ local function recurseCount(path)
             count = count + stat.size
         end
     end
-    
+
 end
 
 print("Warning, I take no responsibility if a bug in this program eats your computer\nIt's your fault for running it under such a permission\nThough, bug reports and fixes are welcomed ;)\n")
@@ -147,9 +147,9 @@ end
 
 function recursive_rename(old_path, new_path)
     local list = physfs.files(old_path)
-    
+
     for i = 1, #list do
-        
+
         if physfs.stat(old_path .. "/" .. list[i]).type == "dir" then
             return recursive_rename(old_path .. "/" .. list[i], new_path .. "/" .. list[i])
         else
@@ -162,7 +162,7 @@ end
 local function recursive_delete(path)
 
     local list = physfs.files(path)
-    
+
     for i = 1, #list do
         if physfs.stat(path .. "/" .. list[i]).type == "dir" then
             return recursive_delete(path .. "/" .. list[i])
@@ -387,7 +387,7 @@ end
 
 for _, path in pairs(mount_paths) do
     local res, msg = physfs.mount(path)
-    
+
     if not res then
         print("WARN: Mount of path '" .. path .. " failed. Error Message: " .. msg)
     end
