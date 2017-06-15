@@ -82,6 +82,18 @@ local function isPlayerWithin(playerName, cuboid)
 
 end
 
+local function getPlayersWithin(cuboid)
+  local result = {}
+  local index = 1
+  for _, playerName in debug.getPlayers() do
+    if isPlayerWithin(playerName, cuboid) then
+      result[index] = playerName
+      index = index + 1
+    end
+  end
+  return result
+end
+
 local function playerHasItem(playerName, itemId, itemQuantity, slot, damage, nbt)
 
   local command = "/testfor @p[name=" .. playerName .. "] {Inventory:[{id:\"" .. itemId .. "\""
@@ -105,8 +117,6 @@ local function playerHasItem(playerName, itemId, itemQuantity, slot, damage, nbt
   command = command .. "}]}"
 
   return debug.runCommand(command) > 0
-
-  --return debug.runCommand("/testfor @p[name=" .. playerName .. "] {Inventory:[{id:\"" .. itemId .. "\"}]}") > 0
 end
 
 local function givePlayerItem(playerName, itemId, quantity, meta, nbt)
@@ -219,6 +229,7 @@ end
 
 return {
   isPlayerWithin = isPlayerWithin,
+  getPlayersWithin = getPlayersWithin,
   playerHasItem = playerHasItem,
   givePlayerItem = givePlayerItem,
   teleportPlayer = teleportPlayer,

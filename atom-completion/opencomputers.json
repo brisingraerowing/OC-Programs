@@ -1,0 +1,13 @@
+{
+  "global": {
+    "type": "table",
+    "fields": {
+      "checkArg" : {
+        "type": "function",
+        "descriptionPlain": "Checks arguments",
+        "args": [{"name": "n"},{"name":"value"},{"name":"type1"},{"name":"..."}],
+        
+      }
+    }
+  }
+}
