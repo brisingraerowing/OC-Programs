@@ -1,23 +1,13 @@
 --[[
 
-  rolecfg.lua - Configuration program for the SecureOS User Roles implementation
+  rolecfg.lua - Basic configuration program for the SecureOS User Roles implementation
   Author: Brisingr Aerowing
 
 ]]
 
--- Taken from auth.lua
-local function split(str,sep)
-  local array = {}
-  local reg = string.format("([^%s]+)",sep)
-  for mem in string.gmatch(str,reg) do
-    table.insert(array, mem)
-  end
-  return array
-end
-
 local argparse = require("argparse")
---local roles = require("roles")
---local internal = require("roles.internal")
+local roles = require("roles")
+local internal = require("roles.internal")
 
 local parser = argparse():name("rolecfg"):description("Configuration program for user roles")
 parser:command_target("command")
@@ -68,9 +58,152 @@ cmd_remove_alias:argument("alias"):description("The alias to remove")
 local cmd_is_alias = parser:command("is-alias"):description("Returns whether a role is actually an alias")
 cmd_is_alias:argument("name"):description("The name of the role to check")
 
-local arguments = parser:parse(split(..., " "))
+local cmd_exe_tbl = {
 
-local ser = require("serialization")
+  ["add-role"] = function(args)
 
-print(ser.serialize(arguments, true))
+    local ok, msg = roles.addRole(args.name, args.description)
 
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["remove-role"] = function(args)
+
+    local ok, msg = roles.removeRole(args.name)
+
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["update-description"] = function(args)
+
+    local ok, msg = roles.updateRoleDescription(args.name, args["new-description"])
+
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["role-exists"] = function(args)
+
+    if roles.roleExists(args.name) then
+      print("Role " .. args.name .. " exists")
+    else
+      print("Role " .. args.name .. " does not exist")
+    end
+
+  end,
+
+  ["role-info"] = function(args)
+
+    local roleName = args.name
+
+    local isAlias, actualName = roles.isAlias(roleName)
+    local roleDesc = roles.getRoleDescription(roleName)
+    local roleId = internal.getRoleId(roleName)
+
+    print("Information about role " .. roleName)
+    print("Is Alias: " .. tostring(isAlias))
+    if isAlias then
+      print("\tActual Role Name: " .. actualName)
+    end
+    print("Description: " .. roleDesc)
+    print("ID: " .. tostring(roleId))
+
+  end,
+
+  ["rename-role"] = function(args)
+
+    local oldName = args["old-name"]
+    local newName = args["new-name"]
+    local noAlias = args["no-alias"]
+
+    local ok, msg = roles.renameRole(oleName, newName, noAlias)
+
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["add-user-role"] = function(args)
+
+    local ok, msg = roles.addUserRole(args.user, args.role)
+
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["remove-user-role"] = function(args)
+
+    local ok, msg = roles.removeUserRole(args.user, args.role)
+
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["user-has-role"] = function(args)
+
+    if roles.isUserInRole(args.user, args.role) then
+      print("User " .. args.user .. " has role " .. args.role)
+    else
+      print("User " .. args.user .. " does not have role " .. args.role)
+    end
+
+  end,
+
+  ["update-users"] = function(args)
+
+    internal.addNewUsers()
+
+  end,
+
+  ["add-alias"] = function(args)
+
+    local ok, msg = roles.addAlias(args.role, args.alias)
+
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["remove-alias"] = function(args)
+
+    local ok, msg = roles.removeAlias(args.alias)
+
+    if not ok then
+      print("ERROR: ", msg)
+    end
+
+  end,
+
+  ["is-alias"] = function(args)
+
+    local isAlias, actualName = roles.isAlias(args.name)
+
+    if isAlias then
+      print("Role " .. args.name .. " is an alias to " .. actualName)
+    else
+      print("Role " .. args.name .. " is not an alias")
+    end
+
+  end
+
+}
+
+local arg = {...}
+
+local arguments = parser:parse(arg)
+
+cmd_exe_tbl[arguments.command](arguments)

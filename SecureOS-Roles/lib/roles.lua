@@ -20,6 +20,10 @@ function M.addRole(roleName, roleDescription)
     return nil, "Permission denied."
   end
 
+  if alias_db[roleName] then
+    return nil, "Role '" .. roleName .. "' already registered as alias"
+  end
+
   if i.roles_db[roleName] ~= nil then
     return nil,"Role '" .. roleName .. "' already registered!"
   end
@@ -29,6 +33,8 @@ function M.addRole(roleName, roleDescription)
   i.roles_db[roleName] = {id=role_id,description=roleDescription}
 
   i.saveRolesDb()
+
+  return true
 
 end
 
