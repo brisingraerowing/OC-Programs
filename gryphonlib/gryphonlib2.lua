@@ -19,9 +19,6 @@ M.text = {}
 M.util = {}
 M.io = {}
 M.error = {}
-M.event = {}
-M.system = {}
-M.network = {}
 M.internet = {}
 
 -- General
@@ -134,19 +131,13 @@ function M.text.ends(str, value)
   return value == "" or string.sub(str, -string.len(value)) == value
 end
 
--- Event functions
-
--- System functions
-
--- Network functions
-
 -- Internet functions
 
 function M.internet.isAvailable()
   return Vars.has_internet
 end
 
-function M.internet.downoadRaw(url)
+function M.internet.downloadRaw(url)
   assert(M.internet.isAvailable())
 
   local sContent = ""
