@@ -2,8 +2,12 @@ local comp = require("computer")
 local fs = require("filesystem")
 local component = require("component")
 local term = require("term")
+local internet = require("internet")
 
 local M = {}
+local Vars = {}
+
+Vars.has_internet = component.isAvailable("internet")
 
 local version = "2.0.0.0"
 local name = "GryphonLib"
@@ -17,6 +21,8 @@ M.io = {}
 M.error = {}
 M.event = {}
 M.system = {}
+M.network = {}
+M.internet = {}
 
 -- General
 
@@ -127,3 +133,31 @@ end
 function M.text.ends(str, value)
   return value == "" or string.sub(str, -string.len(value)) == value
 end
+
+-- Event functions
+
+-- System functions
+
+-- Network functions
+
+-- Internet functions
+
+function M.internet.isAvailable()
+  return Vars.has_internet
+end
+
+function M.internet.downoadRaw(url)
+  assert(M.internet.isAvailable())
+
+  local sContent = ""
+  local result, response = pcall(internet.request, url)
+
+  if not result then
+    return nil
+  end
+  for chunk in response do
+    sContent = sContent..chunk
+  end
+  return sContent
+end
+
