@@ -132,7 +132,7 @@ function M.chooseCraftableItem()
     print("Which did you mean? (0 to cancel)")
     local i = uio.promptForNumberInRange(0, #results)
 
-    if i > 0
+    if i > 0 then
       return results[i]
     else
       return nil
