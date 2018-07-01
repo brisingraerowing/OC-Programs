@@ -1,5 +1,5 @@
 local sp = require("stockpile.settingsPersistence")
-local cr = require("stockpile.craftingRequester")
+cr = require("stockpile.craftingRequester")
 local is = require("stockpile.itemSearcher")
 local uio = require("stockpile.userIo")
 local computer = require("computer")
