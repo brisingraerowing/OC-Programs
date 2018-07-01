@@ -142,3 +142,5 @@ function M.chooseCraftableItem()
   end
 
 end
+
+return M

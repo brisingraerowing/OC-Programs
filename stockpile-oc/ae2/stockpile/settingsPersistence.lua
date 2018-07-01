@@ -79,3 +79,5 @@ function M.itemKey(item)
   end
 
 end
+
+return M

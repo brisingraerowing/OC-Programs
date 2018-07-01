@@ -84,3 +84,5 @@ function M.monitorFinishedCraftingJobs()
   end
 
 end
+
+return M
