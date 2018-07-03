@@ -9,9 +9,9 @@ function M.load(file)
 
   if fs.exists(file) then
     local fh = io.open(file, "r")
-    local s = fh.read("*a")
+    local s = fh:read("*a")
     loaded = serialization.unserialize(s)
-    fh.close()
+    fh:close()
   end
 
   return loaded
@@ -22,9 +22,9 @@ function M.save(file, value)
 
   local fh = io.open(file, "w")
 
-  fh.write(serialization.serialize(value))
+  fh:write(serialization.serialize(value))
 
-  fh.close()
+  fh:close()
 
 end
 
