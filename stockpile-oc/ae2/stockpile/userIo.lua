@@ -24,7 +24,7 @@ end
 function M.promptForNumberInRange(min, max)
   local value = nil
   while value == nil do
-    local tValue = promptForNumber()
+    local tValue = M.promptForNumber()
 
     if tValue < min then
       print("ERROR: please enter a number >= " .. min)
@@ -99,8 +99,8 @@ function M.printOptions(options, banner)
 end
 
 function M.chooseOption(options)
-  printOptions(options)
-  local option = promptForNumberInRange(1, #options)
+  M.printOptions(options)
+  local option = M.promptForNumberInRange(1, #options)
   return options[option]
 end
 
