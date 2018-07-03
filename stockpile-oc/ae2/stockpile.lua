@@ -122,8 +122,14 @@ local function main()
     }
   }
 
+  local t2 = thread.create(cr.monitorStockedItems)
+  local t3 = thread.create(cr.monitorFinishedCraftingJobs)
+
+
   while running do
     sp.load()
+
+    os.sleep(1)
 
     print()
     print()
@@ -134,10 +140,8 @@ local function main()
 
   end
 
+  thread.waitForAll({t2, t3})
+
 end
 
-local t1 = thread.create(main)
-local t2 = thread.create(cr.monitorStockedItems)
-local t3 = thread.create(cr.monitorFinishedCraftingJobs)
-
-thread.waitForAll({t1, t2, t3})
+main()
