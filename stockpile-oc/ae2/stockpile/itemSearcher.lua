@@ -108,6 +108,7 @@ function M.chooseCraftableItem()
   print("Type the name of an item")
   io.write("> ")
   local item = io.read()
+  print(item)
 
   local results = M.findCraftableItemByName(item)
 
