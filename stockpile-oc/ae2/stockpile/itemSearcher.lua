@@ -109,7 +109,7 @@ function M.chooseCraftableItem()
   io.write("> ")
   local item = io.read()
 
-  local results = findCraftableItemByName(item)
+  local results = M.findCraftableItemByName(item)
 
   if #results > 0 then
     local options = {}
