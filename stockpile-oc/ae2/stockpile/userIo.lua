@@ -23,7 +23,7 @@ end
 
 function M.promptForNumberInRange(min, max)
   local value = nil
-  while value == nul do
+  while value == nil do
     local tValue = promptForNumber()
 
     if tValue < min then
