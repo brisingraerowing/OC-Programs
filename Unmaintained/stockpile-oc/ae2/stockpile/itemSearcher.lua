@@ -2,6 +2,7 @@ local uio = require("stockpile.userIo")
 local tp = require("stockpile.tablePersistence")
 local sp = require("stockpile.settingsPersistence")
 local component = require("component")
+local serialization = require("serialization")
 
 local CACHE_FILE = "/etc/stockpile_item_cache.dat"
 
@@ -32,6 +33,9 @@ function M.getItemDetail(item)
 
   if cache.itemDetail[itemKey] == nil then
     local itemDetail = aeInterface.getItemsInNetwork(item)[1]
+    if cache.itemDetail == nil then
+      cache.itemDetail = {}
+    end
     cache.itemDetail[itemKey] = { display_name = itemDetail.label }
   end
 
@@ -50,8 +54,8 @@ function M.refreshItems()
   loadCache()
 
   for i, item in ipairs(allItems) do
-    if item.itemDetails == nil then
-      item.itemDetails = pcall(function() M.getItemDetail(item) end)
+    if item.itemDetails == nil or item.itemDetails == false then
+      item.itemDetails = M.getItemDetail(item) -- pcall(function() M.getItemDetail(item) end)
     end
   end
 
