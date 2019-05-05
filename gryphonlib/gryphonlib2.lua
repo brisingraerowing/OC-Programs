@@ -55,7 +55,7 @@ function M.io.read(path)
 end
 
 function M.io.write(path, data, overwrite)
-  local file - assert(io.open(path, overwrite and "w" or "a"))
+  local file = assert(io.open(path, overwrite and "w" or "a"))
   file:write(data)
   file:close()
   return true
