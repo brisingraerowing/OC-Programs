@@ -10,7 +10,7 @@ function gryphonlib.toboolean(obj)
 
 	if tObj == "boolean" then
 		return obj
-	elseif tObj = "string" then
+	elseif tObj == "string" then
 		local lObj = obj:lower()
 		return lObj == "true" or lObj == "t" or lObj == "yes" or lObj == "y"
 	elseif tObj == "number" then

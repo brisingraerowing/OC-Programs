@@ -16,6 +16,7 @@ local description = "Common utility code for Brisingr Aerowing's programs"
 local gpu = component.isAvailable("gpu") and component.gpu or { getResolution = function() return 80, 24 end, set = function(x, y, value) end }
 
 M.text = {}
+M.text.format  = {}
 M.util = {}
 M.io = {}
 M.error = {}
@@ -38,7 +39,18 @@ end
 -- Misc utility functions
 
 function M.util.toboolean(obj)
-  return not not obj
+  local tObj = type(obj)
+
+	if tObj == "boolean" then
+		return obj
+	elseif tObj == "string" then
+		local lObj = obj:lower()
+		return lObj == "true" or lObj == "t" or lObj == "yes" or lObj == "y"
+	elseif tObj == "number" then
+		return obj ~= 0
+	else
+		return not not obj
+	end
 end
 
 function M.util.iif(condition, true_value, false_value)
