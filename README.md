@@ -9,9 +9,11 @@
 
 ### Libraries List
 
-* GryphonLib - Shared utility library
+* GryphonLib - Shared utility library (Unmaintained)
 * OpenKVS - A Key-Value Store for OpenComputers (based on the Tincan Library, https://luarocks.org/modules/luarocks/tincan)
+* OC-FlatDB - A simple database library (Based on FlatDB, https://github.com/uleelx/FlatDB)
 * Tankutils - Utilities for working with tanks.
 * maputils - Utilities for mapmakers (Unmaintained)
 * Palette-Stuff - Various color palette utilities. (3rd Party. From Fingercomp)
 * aeslua53 - Pure Lua AES implementation, slightly modified to not pollute the global namespace. (3rd Party, https://github.com/gdyr/aeslua53)
+* Traffic Control Utils - Utility functions for the Traffic Control mod (https://www.curseforge.com/minecraft/mc-mods/traffic-control)

@@ -61,6 +61,7 @@ end
 
 function M.io.read(path)
   local file = io.open(path)
+  if not file then return nil, "Error opening file" end
   local data = file:read("*all")
   file:close()
   return data
@@ -107,7 +108,6 @@ function M.text.hline(y, char)
         chara = chara..char
     end
     gpu.set(1, y, chara)
-    chara = nil
 end
 
 function M.text.split(sep, str, maxSplit, isregex)
@@ -116,7 +116,7 @@ function M.text.split(sep, str, maxSplit, isregex)
 
 	local aRecord = {}
 
-	if self:len() > 0 then
+	if str:len() > 0 then
 		local bPlain = not isregex
 		maxSplit = maxSplit or -1
 
