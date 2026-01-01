@@ -70,7 +70,7 @@ end
 ---@return string Error message if failure, may be nil
 function M.clearStates(id)
 
-    local pos = nil
+    local pos = {}
 
     if type(id) == "table" then
             
@@ -80,33 +80,31 @@ function M.clearStates(id)
                 if id[itr] < 1 or id[itr] > #indexToLight then
                     return false, "Invalid index"
                 end
-                pos = indexToLight[id[itr]]
+                table.insert(pos, indexToLight[id[itr]])
             elseif type(id[itr]) == "string" then
                 if nameToLight[id[itr]] == nil then
                     return false, "Invalid name"
                 end
-                pos = nameToLight[id[itr]]
+                table.insert(pos, nameToLight[id[itr]])
             end
 
         end
 
     elseif type(id) == "number" then
-        pos = indexToLight[id]
+        table.insert(pos, indexToLight[id])
     elseif type(id) == "string" then
-        pos = nameToLight[id]
+        table.insert(pos, nameToLight[id])
     else
         return false, "Invalid ID type, must be table, number or string"
     end
 
-    if pos == nil then
-        return false, "INTERNAL ERROR: could not get light position"
+    if #pos == 0 then
+        return false, "INTERNAL ERROR: could not get light positions"
     end
 
-    if #pos ~= 3 then
-        return false, "INTERNAL ERROR: Invalid position entry in cached lists"
+    for k, v in pairs(pos) do
+        tccard.clearStates(v[1], v[2], v[3])
     end
-
-    tccard.clearStates(pos[1], pos[2], pos[3])
     return true
 
 end
