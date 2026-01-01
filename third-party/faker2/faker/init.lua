@@ -150,9 +150,9 @@ end
 function Faker:firstname(properties)
 	self.firstnames = {{}, {}}
 		-- 1 - feminine
-	self.firstnames[1] = require('faker.data.pt_BR.firstnames_female')
+	self.firstnames[1] = require('faker.data.' .. self.locale .. '.firstnames_female')
 	-- 2 - masculine
-	self.firstnames[2] = require('faker.data.pt_BR.firstnames_male')
+	self.firstnames[2] = require('faker.data.' .. self.locale .. '.firstnames_male')
 	function self:firstname(properties)
 		properties = properties or {}
 		local gender = 1
